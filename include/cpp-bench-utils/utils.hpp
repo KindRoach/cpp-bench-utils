@@ -8,3 +8,7 @@
 #ifdef __CUDACC__
 #include "cuda-utils.hpp"
 #endif
+
+#ifdef __SYCL_COMPILER_VERSION
+#include "sycl-utils.hpp"
+#endif
