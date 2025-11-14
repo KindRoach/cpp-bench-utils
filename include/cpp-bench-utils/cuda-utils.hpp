@@ -25,4 +25,14 @@ namespace cbu {
         acc_check(gt, actual);
     }
 
+    template <typename T>
+    void cuda_acc_check(thrust::device_vector<T>& d_expected, thrust::device_vector<T>& d_actual)
+    {
+        size_t size = d_expected.size();
+        std::vector<T> h_expected(size);
+        std::vector<T> h_actual(size);
+        thrust::copy(d_expected.begin(), d_expected.end(), h_expected.begin());
+        thrust::copy(d_actual.begin(), d_actual.end(), h_actual.begin());
+        acc_check(h_expected, h_actual);
+    }
 }
