@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bench.hpp"
+#include "debug.hpp"
 #include "matrix.hpp"
 #include "validate.hpp"
 #include "vector.hpp"
