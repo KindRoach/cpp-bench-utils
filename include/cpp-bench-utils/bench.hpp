@@ -55,10 +55,17 @@ namespace cbu
         print_human_readable_time_usage(num_iter, totalDuration);
     }
 
+    struct BenchmarkOptions
+    {
+        double warmup_ratio = 0.1;
+        size_t total_mem_bytes = 0;
+        size_t total_flop = 0;
+    };
+
     void benchmark_func_by_time(
         size_t total_seconds,
         const std::function<void()>& func,
-        double warmup_ratio = 0.1
+        const BenchmarkOptions& opt = {}
     )
     {
         if (total_seconds <= 0)
@@ -71,7 +78,7 @@ namespace cbu
         using clock = std::chrono::high_resolution_clock;
 
         // Warm-up phase
-        double warmup_seconds = total_seconds * warmup_ratio;
+        double warmup_seconds = total_seconds * opt.warmup_ratio;
         auto warmup_end = clock::now() + std::chrono::duration<double>(warmup_seconds);
         while (clock::now() < warmup_end)
         {
@@ -79,7 +86,7 @@ namespace cbu
         }
 
         // Benchmark phase
-        double benchmark_seconds = total_seconds * (1.0 - warmup_ratio);
+        double benchmark_seconds = total_seconds * (1.0 - opt.warmup_ratio);
         auto bench_end = clock::now() + std::chrono::duration<double>(benchmark_seconds);
 
         int num_iter = 0;
@@ -93,5 +100,18 @@ namespace cbu
 
         auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         print_human_readable_time_usage(num_iter, totalDuration);
+
+        if (num_iter > 0 && opt.total_mem_bytes > 0.0)
+        {
+            double avg_time_s = totalDuration.count() / 1e6 / num_iter;
+            double mem_bw = opt.total_mem_bytes / avg_time_s / 1e9;
+            std::cout << "Memory Bandwidth: " << mem_bw << " GB/s" << "\n";
+        }
+        if (num_iter > 0 && opt.total_flop > 0.0)
+        {
+            double avg_time_s = totalDuration.count() / 1e6 / num_iter;
+            double compute_perf = opt.total_flop / avg_time_s / 1e12;
+            std::cout << "Compute Perf: " << compute_perf << " TFLOP/s" << "\n";
+        }
     }
 }
