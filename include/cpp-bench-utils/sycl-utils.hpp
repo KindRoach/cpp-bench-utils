@@ -80,6 +80,16 @@ namespace cbu
         acc_check(gt, actual);
     }
 
+    template <typename T>
+    void sycl_acc_check(sycl::queue& q, T* d_gt, T* d_actual, size_t size)
+    {
+        std::vector<T> gt(size);
+        std::vector<T> actual(size);
+        q.memcpy(gt.data(), d_gt, size * sizeof(T)).wait();
+        q.memcpy(actual.data(), d_actual, size * sizeof(T)).wait();
+        acc_check(gt, actual);
+    }
+
     void sycl_print_item_info(sycl::nd_item<1> it)
     {
         size_t group_range = it.get_group_range(0);
