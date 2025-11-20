@@ -67,7 +67,7 @@ namespace cbu
         {
             for (size_t j = 0; j < n; j++)
             {
-                T sum = 0;
+                T sum = static_cast<T>(0);
                 for (size_t p = 0; p < k; p++)
                 {
                     if constexpr (b_layout == matrix_layout::row_major)

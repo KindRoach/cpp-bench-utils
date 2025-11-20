@@ -7,7 +7,7 @@
 namespace cbu
 {
     template <typename T, typename PromotionType = double>
-    void random_fill(std::vector<T>& vec, T min_val = T{}, T max_val = T{100})
+    void random_fill(std::vector<T>& vec, T min_val = static_cast<T>(-10), T max_val = static_cast<T>(10))
     {
         std::random_device rd;
         std::mt19937 gen(rd());
